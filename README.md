@@ -1,8 +1,10 @@
 # pptp-route-helper
 
-Linux PPTP route helper for automatic DHCP classless routes (Classless-Static-Route Option 121, Classless-Static-Route-Microsoft Option 249)
+Linux PPTP route helper for automatic DHCP classless routes ( Classless-Static-Route, rfc3442-classless-static-routes, Option 121, Classless-Static-Route-Microsoft, ms-classless-static-routes, Option 249 )
 
-I havent tested it with FreeBSD/Mac, but it should support those if you specify -r bsd.
+This scripts is useful if you have MacOS/FreeBSD or Linux clients in your network and they are using PPTP VPN. You do not have to hardcode routing for them, you can just use this script to receive and add routes automatically. And you only have to modify your route settings in your DHCP server after that.
+
+(For the server part: http://www.janoszen.com/2012/08/07/in-search-of-the-perfect-vpn-solution/)
 
 ### perl module dependency
 - Getopt::Std
@@ -51,7 +53,7 @@ root@asd:/home/macskas# perl pptp-route-helper.pl -i ppp1 -s -r bsd -n
 ```
 ### automatic
 First copy pptp-route-helper.pl to /usr/local/sbin/ directory.
-Then you have to create a script shellscript and place it in the /etc/ppp/ip-up.d/ directory.
+Then you have to create a shell script and place it in the /etc/ppp/ip-up.d/ directory.
 ```
 root@asd:/etc/ppp/ip-up.d# cat asd.sh 
 #!/bin/bash
