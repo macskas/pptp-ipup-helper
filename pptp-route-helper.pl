@@ -7,11 +7,21 @@ use Getopt::Std;
 use IO::Socket::INET;
 use IO::Select;
 use Socket;
-use Net::DHCP::Packet;
-use Net::DHCP::Constants;
-use POSIX qw(setsid strftime);
+use POSIX qw /strftime/;
 use Sys::Hostname;
-require 'sys/ioctl.ph';
+
+eval {
+    require Net::DHCP::Packet;
+    require Net::DHCP::Constants;
+
+    Net::DHCP::Packet->import();
+    Net::DHCP::Constants->import();
+
+    1;
+} or do {
+    &do_error("Please install modules Net::DHCP::Packet, Net::DHCP::Constants). Debian/Ubuntu: apt-get install libnet-dhcp-perl. FreeBSD/MacOS: cpan install Net::DHCP::Packet");
+};
+
 
 my $DEBUG = 0;
 my $SUBNET_ROUTE_ADD = 0;
@@ -62,6 +72,12 @@ $SIG{'ALRM'} = sub {
 
 sub get_interface_address()
 {
+    eval {
+	require 'sys/ioctl.ph';
+    } or do {
+	&do_error("Missing sys/ioctl.ph. For example: cd /usr/include; h2ph -r -l .; Or google for missing ioctl.ph");
+    };
+
     my ($iface) = @_;
     my $socket;
     socket($socket, PF_INET, SOCK_STREAM, (getprotobyname('tcp'))[2]) || &do_error("unable to create a socket: $!");
